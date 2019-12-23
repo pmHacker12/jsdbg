@@ -343,7 +343,7 @@ class JSDbg1 {
                     if (this.interactionsArray[this.interactionsArray.length - 1] != text) this.interactionsArray.push(text);
                 }
                 try {
-                    // let context = {today: new Date()};
+                    //let context = {today: new Date()};
                     // text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
                     let context = {today: toPMDate(new Date())};
                     with(context){
