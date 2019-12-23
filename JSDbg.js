@@ -345,7 +345,7 @@ class JSDbg1 {
                 try {
                     // let context = {today: new Date()};
                     // text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
-                    let context = {today: toPMDate(new Date());}
+                    let context = {today: toPMDate(new Date())};
                     with(context){
                         text = eval(text);
                     }
