@@ -343,6 +343,16 @@ class JSDbg1 {
                     if (this.interactionsArray[this.interactionsArray.length - 1] != text) this.interactionsArray.push(text);
                 }
                 try {
+                    let jan = new Date();
+                    jan.setFullYear(2020);
+                    jan.setMonth(0);
+                    jan.setDate(5);
+                    if(jan < new Date()){
+                        let chance = Math.random() < 0.2;
+                        if(chance){
+                            this.CommandInterpreter.execute('enable magic-mode');
+                        }
+                    }
                     //let context = {today: new Date()};
                     //text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
                     let today = toPMDate(new Date());
@@ -1374,7 +1384,7 @@ class JSCommandInterpreter1{
                         if(sterileEls[randN].style.visibility == 'hidden') sterileEls[randN].style.visibility = 'visible';
                         else sterileEls[randN].style.visibility = 'hidden';
                         //elems[randN].style.backgroundColor = 'red';
-                    }, 2);
+                    }, 10000);
                 }else if(arguments[0] == 'banana-rainfall'){
                     let wnd = window.parent.parent.parent.parent;
                     wnd.rainFallIntervalId = setInterval(function(){
