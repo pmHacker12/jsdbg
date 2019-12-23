@@ -1,4 +1,4 @@
-class JSDbg1 {
+class JSD‍bg1 {
     constructor(options) {
         this.initOptions(options);
         this.createBody();
@@ -7,7 +7,6 @@ class JSDbg1 {
         this.bodyResizableInit();
         this.options.windowObj.addEventListener('error', function(event) {
             let string = event.message + ' at ' + (event.source ? event.source + ':' : '') + event.lineno + ':' + event.colno;
-            // message.confirm(JSON.stringify(event.error));
             console.error(string);
         });
         this.options.logger.developerScreen = this.consoleEl;
@@ -344,7 +343,9 @@ class JSDbg1 {
                     if (this.interactionsArray[this.interactionsArray.length - 1] != text) this.interactionsArray.push(text);
                 }
                 try {
-                    text = eval(text);
+                    let context = {today: new Date()};
+                    text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
+                    //text = eval(text);
                     this.logger.log(text);
                 } catch (e) {
                     text = e.stack;
@@ -471,29 +472,31 @@ class JSLogger1 {
     }
 
     //public methods
-    log(item, additionalInfo) {
-        this._log(item, 'log', additionalInfo);
+    log(...items) {
+        this._log(items, 'log');
     }
 
-    warn(item, additionalInfo) {
-        this._log(item, 'warn', additionalInfo);
+    warn(...items) {
+        this._log(items, 'warn');
     }
 
-    error(item, additionalInfo) {
-        this._log(item, 'error', additionalInfo);
+    error(...items) {
+        this._log(items, 'error');
     }
 
     //private methods
-    _log(item, type, additionalInfo) {
-        let text = this._prepareString(item),
-            stack = this.errClass().write().split('\n').slice(3);
+    _log(items, type) {
+        let text = '';
+        for(let item of items){
+           text += this._prepareString(item) + ' ';
+        }
+        let stack = this.errClass().write().split('\n').slice(3);
 
         let rowObj = {
             text: text,
             type: type,
             stack: stack,
-            date: new Date(),
-            additionalInfo: additionalInfo
+            date: new Date()
         };
 
         this.logsArray.push(rowObj);
@@ -532,7 +535,6 @@ class JSLogger1 {
 
         //additional info
         let additionalDiv = currLog.firstChild;
-        additionalDiv.innerText = rowObj.additionalInfo || '';
         let currDate = rowObj.date;
         if (this.options.includeDate) {
             additionalDiv.innerText += ' ' + this._formatDate(currDate);
@@ -1013,9 +1015,7 @@ class JSInspector1 {
                 if (evt.pageY) {
                     return evt.pageY;
                 } else if (evt.clientY) {
-                    return evt.clientY + (document.documentElement.scrollTop ?
-                        document.documentElement.scrollTop :
-                        _this.options.windowObj.document.body.scrollTop);
+                    return evt.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : _this.options.windowObj.document.body.scrollTop);
                 } else {
                     return null;
                 }
@@ -1057,7 +1057,7 @@ class JSInspector1 {
             }
             inspectBtn.onclick = function menuOnClick(ev) {
                 setTimeout(function () { //in timeout, else sets currEl to inspectBtn
-                    let currEl = document.elementFromPoint(mX, mY);
+                    let currEl = document.elementFromPoint(evt.clientX, evt.clientY);
                     for (let idx in _this.references) {
                         if (_this.references[idx].isSameNode(currEl)) {
                             let foundEl = _this.options.inspectorHTMLContainer.querySelector('[data-reference="' + idx + '"] span');
@@ -1142,10 +1142,10 @@ class JSInspector1 {
         let rect = this.references[ref].getBoundingClientRect();
         //Padding el
         let style = window.getComputedStyle(this.references[ref]),
-            paddingLeft = toNumber(parseFloat(style.getPropertyValue('padding-left'))),
-            paddingRight = toNumber(parseFloat(style.getPropertyValue('padding-right'))),
-            paddingTop = toNumber(parseFloat(style.getPropertyValue('padding-top'))),
-            paddingBottom = toNumber(parseFloat(style.getPropertyValue('padding-bottom')));
+            paddingLeft = this.makeNaNtoZero(parseFloat(style.getPropertyValue('padding-left'))),
+            paddingRight = this.makeNaNtoZero(parseFloat(style.getPropertyValue('padding-right'))),
+            paddingTop = this.makeNaNtoZero(parseFloat(style.getPropertyValue('padding-top'))),
+            paddingBottom = this.makeNaNtoZero(parseFloat(style.getPropertyValue('padding-bottom')));
 
         this.overlay.style.display = 'block';
         this.overlay.style.top = rect.y + +pageYOffset + 'px';
@@ -1161,10 +1161,10 @@ class JSInspector1 {
         this.overlay.style.borderRight = paddingRight + 'px solid rgba(51,204,65,0.5)';
         this.overlay.style.borderBottom = paddingBottom + 'px solid rgba(51,204,65,0.5)';
 
-        let marginLeft = toNumber(parseFloat(style.getPropertyValue('margin-left'))),
-            marginRight = toNumber(parseFloat(style.getPropertyValue('margin-right'))),
-            marginTop = toNumber(parseFloat(style.getPropertyValue('margin-top'))),
-            marginBottom = toNumber(parseFloat(style.getPropertyValue('margin-bottom')));
+        let marginLeft = this.makeNaNtoZero(parseFloat(style.getPropertyValue('margin-left'))),
+            marginRight = this.makeNaNtoZero(parseFloat(style.getPropertyValue('margin-right'))),
+            marginTop = this.makeNaNtoZero(parseFloat(style.getPropertyValue('margin-top'))),
+            marginBottom = this.makeNaNtoZero(parseFloat(style.getPropertyValue('margin-bottom')));
 
         this.marginOverlay.style.display = 'block';
         this.marginOverlay.style.top = rect.y + +pageYOffset - marginTop + 'px';
@@ -1253,6 +1253,10 @@ class JSInspector1 {
         styleRow.appendChild(propertyValue);
 
         return styleRow;
+    }
+
+    makeNaNtoZero(value){
+        return Number(value) ? Number(value) : 0;
     }
 }
 
@@ -1467,7 +1471,6 @@ class JSEditor1 {
     initBody() {
         this.body.addEventListener('heightchange', function (e) {
             this.editor.resize();
-            console.log(e.detail);
         }.bind(this));
 
         this.wrapper = document.createElement('div');
@@ -1479,6 +1482,14 @@ class JSEditor1 {
         document.head.appendChild(this.aceScript);
 
         this.aceScript.onload = function () {
+            let cssTag = document.createElement('style');
+            cssTag.type = 'text/css';
+            cssTag.innerHTML = `.ace_editor, .ace_editor *{
+                font-family: monospace !important;
+                font-size: 12px !important;
+            }`;
+            document.head.appendChild(cssTag);
+
             this.editor = ace.edit(this.wrapper);
             this.editor.setOptions({
                 autoScrollEditorIntoView: true,
@@ -1765,6 +1776,8 @@ class JSChat1 {
         this.chatMessagesWrapper = document.createElement('div');
         this.chatMessagesWrapper.style.width = '100%';
         this.chatMessagesWrapper.style.height = 'calc(100%-24px)';
+        this.chatMessagesWrapper.style.maxHeight = 'calc(100%-24px)';
+        this.chatMessagesWrapper.style.overflow = 'auto';
         this.chatMessagesWrapper.style.flexGrow = '1';
         this.chatMessagesWrapper.style.display = 'flex';
         this.chatMessagesWrapper.style.flexDirection = 'column';
@@ -1808,7 +1821,7 @@ class JSChat1 {
         let additionalDiv = document.createElement('div');
         additionalDiv.style.marginRight = '6px';
         additionalDiv.style.maxWidth = '20%';
-        additionalDiv.style.overflowX = 'hidden';
+        additionalDiv.style.overflow = 'hidden';
         additionalDiv.style.padding = '0';
         additionalDiv.style.fontSize = '11px';
         additionalDiv.className = 'additional-info';
@@ -1836,7 +1849,7 @@ class JSChat1 {
 
     addRows(rows){
         let _this = this;
-        rows.sort((a,b)=>b._id - a._id); //????
+        rows.sort((a,b)=>a.date - b.date); //трябва да си ги сортираме по дата
         rows.forEach((row)=>_this.addRow(row));
     }
 
@@ -1903,13 +1916,4 @@ class JSChat1 {
             }
         }
     }
-}
-
-/**
- * @description Parses a value to number. If the value cant be parsed returns 0.
- * @param {any} value Value to be parsed to number.
- * @returns {number}
- */
-function toNumber(value) {
-    return Number(value) ? Number(value) : 0;
 }
