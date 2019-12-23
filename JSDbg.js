@@ -334,6 +334,7 @@ class JSDbg1 {
             if(text.length > 1 && (text[0] == ':' || text[0] == '\\' || text[0] == '/')){
                 this.CommandInterpreter.execute(text.substring(1));
             }else {
+                alert('wtf');
                 this.logger.log('Executing: ' + text);
 
                 if (!this.interactionsArray) {
