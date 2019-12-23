@@ -15,9 +15,9 @@ class JSDbg1 {
         this.options.inspector.inspectorStylesContainer = this.inspectorStylesContainer;
         this.options.inspector.debuggerId = this.body.id;
         this.options.inspector.windowObj = this.options.windowObj;
-        this.logger = new (this.options.loggerClass || JSLogger)(this.options.logger);
+        this.logger = new (this.options.loggerClass || JSLogger1)(this.options.logger);
         try {
-            this.inspector = new (this.options.inspectorClass || JSInspector)(this.options.inspector);
+            this.inspector = new (this.options.inspectorClass || JSInspector1)(this.options.inspector);
         } catch (e) {
             alert(e.stack);
         }
@@ -31,14 +31,14 @@ class JSDbg1 {
 
         this.options.additionalTabs.push({
             tabName: 'Editor',
-            className: JSEditor,
+            className: JSEditor1,
             bodyIdx: 'JSEditor',
             options: {}
         });
 
         this.options.additionalTabs.push({
             tabName: 'Git',
-            className: JSGitHelper,
+            className: JSGitHelper1,
             bodyIdx: 'JSGitHelper',
             options: {}
         });
@@ -89,7 +89,7 @@ class JSDbg1 {
         this.createInspector();
         if (this.options.logger.useDeveloperScreen){
              this.createConsole();
-             this.CommandInterpreter = new JSCommandInterpreter({mainDebugger: this});
+             this.CommandInterpreter = new JSCommandInterpreter1({mainDebugger: this});
         }
     }
 
@@ -437,7 +437,7 @@ class JSDbg1 {
     }
 }
 
-class JSLogger {
+class JSLogger1 {
     constructor(options) {
         this.initOptions(options);
         this.logsArray = [];
@@ -773,51 +773,7 @@ class JSLogger {
     }
 }
 
-class SimpleLogger {
-    constructor(options) {
-        this.options = options || {};
-    }
-
-    //public methods
-    log(text) {
-        this._log(text, 'log');
-    }
-
-    warn(text) {
-        this._log(text, 'warn');
-    }
-
-    error(text) {
-        this._log(text, 'error');
-    }
-
-    //private methods
-    _log(text, method) {
-        text = this._prepareString(text);
-        switch (method) {
-            case 'log':
-                console.log(text);
-                break;
-            case 'warn':
-                console.warn(text);
-                break;
-            case 'error':
-                console.error(text);
-                break;
-            default:
-                this.options.defaultLog ? this.options.defaultLog(text) : console.log(text);
-        }
-    }
-
-    _prepareString(text) {
-        if (this.options.includeDate) {
-            text = new Date() + ': ' + text;
-        }
-        return text;
-    }
-}
-
-class PMJSDownloader {
+class PMJSDownloader1 {
     constructor(options) {
         this.initOptions(options);
         this.initBody();
@@ -999,7 +955,7 @@ class PMJSDownloader {
     }
 }
 
-class JSInspector {
+class JSInspector1 {
     constructor(options) {
         this.initOptions(options);
         this.elsWithNoCloseTag = ['INPUT', 'BR', 'HR'];//може да има още
@@ -1157,7 +1113,7 @@ class JSInspector {
                 //
                 let newLine = this.newEl.cloneNode(true);
 
-                newLine.innerHTML = '<div><i class="showHideElement" style="font-size: 10px;width:10px;cursor:pointer;transform:rotateZ(90deg);" onclick="parantElementClick(this);">play_arrow</i><span contenteditable="true"><code>&#60;' + elChildren[i].tagName.toLowerCase() + atrOutput + '&#62;</code></span></div>' +
+                newLine.innerHTML = '<div><i class="showHideElement" style="font-size: 10px;width:10px;cursor:pointer;transform:rotateZ(90deg);" onclick="parantElementClick1(this);">play_arrow</i><span contenteditable="true"><code>&#60;' + elChildren[i].tagName.toLowerCase() + atrOutput + '&#62;</code></span></div>' +
                     (this.elsWithNoCloseTag.indexOf(elChildren[i].tagName) == -1 ? ('<div style="border-left:solid #aaf 1px;" class="childrenHolder"></div>' +
                         '<div class="closeTab"><span contenteditable="true"><code>&#60;&#47;' + elChildren[i].tagName.toLowerCase() + '&#62;</code></span></div>') : '');
 
@@ -1300,7 +1256,7 @@ class JSInspector {
     }
 }
 
-function parantElementClick(el) {// ????????? ???????? ?? ???
+function parantElementClick1(el) {// ????????? ???????? ?? ???
     let closeTabs = el.parentNode.parentNode.querySelectorAll('.closeTab');
     if ((el.dataset.notExpanded || 'true') == 'true') {
         el.dataset.notExpanded = 'false';
@@ -1315,7 +1271,7 @@ function parantElementClick(el) {// ????????? ???????? ?? ???
     }
 }
 
-class JSCommandInterpreter{
+class JSCommandInterpreter1{
     constructor(options){
         this.initOptions(options);
 
@@ -1342,7 +1298,7 @@ class JSCommandInterpreter{
                 }else if(arguments[0] == 'PMJSDownloader'){
                     this.mainDebugger.addTab({
                         tabName: 'PMJSDownloader',
-                        className: PMJSDownloader,
+                        className: PMJSDownloader1,
                         bodyIdx: 'PMJSDownloader',
                         options: {}
                     });
@@ -1442,7 +1398,7 @@ class JSCommandInterpreter{
                 }else if(arguments[0] == 'chat'){
                     this.mainDebugger.addTab({
                         tabName: 'Chat',
-                        className: JSChat,
+                        className: JSChat1,
                         bodyIdx: 'JSChat',
                         options: {}
                     });
@@ -1495,7 +1451,7 @@ class JSCommandInterpreter{
 
 }
 
-class JSEditor {
+class JSEditor1 {
     constructor(options) {
         this.initOptions(options);
         this.initBody();
@@ -1534,7 +1490,7 @@ class JSEditor {
     }
 }
 
-class JSGitHelper {
+class JSGitHelper1 {
     constructor(options) {
         this.initOptions(options);
         this.initBody();
@@ -1783,7 +1739,7 @@ class JSGitHelper {
     }
 }
 
-class JSChat {
+class JSChat1 {
     constructor(options) {
         this.initOptions(options);
         this.initBody();
