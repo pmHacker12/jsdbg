@@ -353,10 +353,10 @@ class JSDbg1 {
                             this.CommandInterpreter.execute('enable magic-mode');
                         }
                     }
-                    //let context = {today: new Date()};
-                    //text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
-                    let today = toPMDate(new Date());
-                    text = eval(text);
+                    let context = {today: toPMDate(new Date())};
+                    text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
+                    // let today = toPMDate(new Date());
+                    // text = eval(text);
                     this.logger.log(text);
                 } catch (e) {
                     text = e.stack;
