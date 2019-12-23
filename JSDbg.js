@@ -344,6 +344,7 @@ class JSDbg1 {
                 }
                 try {
                     let context = {today: new Date()};
+                    alert(JSON.stringify(context));
                     text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
                     //text = eval(text);
                     this.logger.log(text);
