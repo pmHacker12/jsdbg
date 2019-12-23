@@ -334,7 +334,6 @@ class JSDbg1 {
             if(text.length > 1 && (text[0] == ':' || text[0] == '\\' || text[0] == '/')){
                 this.CommandInterpreter.execute(text.substring(1));
             }else {
-                alert('wtf');
                 this.logger.log('Executing: ' + text);
 
                 if (!this.interactionsArray) {
@@ -345,7 +344,6 @@ class JSDbg1 {
                 }
                 try {
                     let context = {today: new Date()};
-                    alert(JSON.stringify(context));
                     text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
                     //text = eval(text);
                     this.logger.log(text);
