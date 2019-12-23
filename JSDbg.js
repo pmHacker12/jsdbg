@@ -345,8 +345,10 @@ class JSDbg1 {
                 try {
                     // let context = {today: new Date()};
                     // text = (new Function(...Object.keys(context), `return ${text}`))(...Object.values(context));
-                    let today = toPMDate(new Date());
-                    text = eval(text);
+                    let context = {today: toPMDate(new Date());}
+                    with(context){
+                        text = eval(text);
+                    }
                     this.logger.log(text);
                 } catch (e) {
                     text = e.stack;
