@@ -1,4 +1,4 @@
-class JSD‍bg1 {
+class JSDbg1 {
     constructor(options) {
         this.initOptions(options);
         this.createBody();
